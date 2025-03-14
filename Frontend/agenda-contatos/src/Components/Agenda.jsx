@@ -1,12 +1,12 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import FormContato from "./FormContato";
 import AgendaItem from "./AgendaItem";
-import '../Styles/Agenda.css'
+import '../Styles/Agenda.css';
 
 export default function Agenda() {
     const [contatos, setContatos] = useState([]);
+    const [contatoEditando, setContatoEditando] = useState(null);
 
     useEffect(() => {
         const fetchContatos = async () => {
@@ -17,13 +17,17 @@ export default function Agenda() {
                 console.error("Erro ao carregar os contatos:", error);
             }
         };
-    
+
         fetchContatos();
     }, []);
 
     const handleAdicionarContato = (contato) => {
         setContatos((prevContato) => [...prevContato, contato]);
-    }
+    };
+
+    const handleEditarContato = (contato) => {
+        setContatoEditando(contato);
+    };
 
     const apagarContato = async (id) => {
         try {
@@ -36,14 +40,22 @@ export default function Agenda() {
 
     return (
         <div className="container">
-            <FormContato onAdicionarContato={handleAdicionarContato} />
+            <FormContato 
+                onAdicionarContato={handleAdicionarContato} 
+                contatoEditando={contatoEditando} 
+                setContatoEditando={setContatoEditando} 
+            />
             <h1 className="title">Agenda</h1>
-
             <ul className="contact-list">
                 {contatos.map((contato) => (
-                    <AgendaItem key={contato.id} contato={contato} onApagarContato={apagarContato} />
+                    <AgendaItem 
+                        key={contato.id} 
+                        contato={contato} 
+                        onApagarContato={apagarContato} 
+                        onEditarContato={handleEditarContato} 
+                    />
                 ))}
             </ul>
         </div>
-    )
+    );
 }
